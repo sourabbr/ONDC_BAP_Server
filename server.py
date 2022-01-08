@@ -5,6 +5,7 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 
+import waitress
 import requests
 
 import time
@@ -46,6 +47,13 @@ bpp_ack_response = {
       "status": "ACK"
     }
   }
+}
+
+err_response = {
+    "error": {
+        "code": "500",
+        "message": "Error Occurred!!"
+    }
 }
 
 def Logger (heading, value):
@@ -128,10 +136,8 @@ def search():
     resp = SendPostRequest ("http://localhost:5001/sourab", data)
 
     if (not resp):
-        #ONDC_TODO
-        #Need to agree with client what error to send
         Logger("Error NACK")
-        return resp
+        return jsonify (err_response)
     
     # Check for data from onsearch
     while NoDataReceived (tran_id):
@@ -197,7 +203,7 @@ def select():
 
     if (not resp):
         Logger("Error NACK")
-        return resp
+        return jsonify (err_response)
     
     # Check for data from onsearch
     while NoDataReceived (tran_id):
@@ -263,7 +269,7 @@ def init():
 
     if (not resp):
         Logger("Error NACK")
-        return resp
+        return jsonify (err_response)
     
     # Check for data from onsearch
     while NoDataReceived (tran_id):
@@ -329,7 +335,7 @@ def confirm():
 
     if (not resp):
         Logger("Error NACK")
-        return resp
+        return jsonify (err_response)
     
     # Check for data from onsearch
     while NoDataReceived (tran_id):
@@ -396,7 +402,7 @@ def cancel():
 
     if (not resp):
         Logger("Error NACK")
-        return resp
+        return jsonify (err_response)
     
     # Check for data from onsearch
     while NoDataReceived (tran_id):
@@ -432,4 +438,6 @@ def oncancel():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    # app.run(port=5000, host="0.0.0.0", debug=True)
+    from waitress import serve
+    serve (app, host="0.0.0.0", port=5000)  
