@@ -27,8 +27,8 @@ Core_Version_Value   = "1.0.0"
 
 #ONDC_TODO
 # update the values
-BAP_ID_Value         = "https://mock_bpp.com/"
-BAP_URI_Value        = "https://mock_bpp.com/"
+BAP_ID_Value         = "https://tbap.tallyenterprise.com/"
+BAP_URI_Value        = "https://tbap.tallyenterprise.com/"
 
 
 app = Flask(__name__)
@@ -89,9 +89,10 @@ def NoDataReceived (tran_id):
     return not message_id_map[transaction_id_map[tran_id]] 
 
 def SendPostRequest (url, data):
-    headers = {'Content-type': 'text/html; charset=UTF-8'}
+    headers = {'Content-type': 'application/json; charset=UTF-8'}
     response = requests.post(url, json=data, headers=headers)
     resp_body = response.json () 
+    Logger ("BG Response Body", resp_body)
     if (resp_body["message"]["ack"]["status"] == "ACK"):
         return True
     else:
@@ -111,10 +112,10 @@ def search():
     Logger("Request from Tally Buyer App", req_str)
 
     # Create transaction id and message id
-    # tran_id = str (uuid.uuid4())
-    # msg_id = str (uuid.uuid4())
-    tran_id = str (1209849124)
-    msg_id = str (12341242343)
+    tran_id = str (uuid.uuid4())
+    msg_id = str (uuid.uuid4())
+    # tran_id = str (1209849124)
+    # msg_id = str (12341242343)
     Logger("Action", "Search")
     Logger("Transaction ID", tran_id)
     Logger("Message ID", msg_id)
@@ -133,10 +134,10 @@ def search():
 
     #ONDC_TODO
     # Add BG URI
-    resp = SendPostRequest ("http://localhost:5001/sourab", data)
+    resp = SendPostRequest ("https://pilot-gateway-1.beckn.nsdl.co.in/search", data)
 
     if (not resp):
-        Logger("Error NACK")
+        Logger("Error", "NACK")
         return jsonify (err_response)
     
     # Check for data from onsearch
@@ -150,7 +151,7 @@ def search():
     return res
 
 
-@app.route('/onsearch', methods=["POST"])
+@app.route('/on_search', methods=["POST"])
 def onsearch():
 
     # Read request form BG    
@@ -214,7 +215,7 @@ def select():
     Logger("Response being sent to Tally Buyer App", res)    
     return res
 
-@app.route('/onselect', methods=["POST"])
+@app.route('/on_select', methods=["POST"])
 def onselect():
 
     # Read request form BPP    
@@ -280,7 +281,7 @@ def init():
     Logger("Response being sent to Tally Buyer App", res)    
     return res
 
-@app.route('/oninit', methods=["POST"])
+@app.route('/on_init', methods=["POST"])
 def oninit():
 
     # Read request form BPP    
@@ -347,7 +348,7 @@ def confirm():
     return res
 
 
-@app.route('/onconfirm', methods=["POST"])
+@app.route('/on_confirm', methods=["POST"])
 def onconfirm():
 
     # Read request form BPP    
@@ -414,7 +415,7 @@ def cancel():
     return res
 
 
-@app.route('/oncancel', methods=["POST"])
+@app.route('/on_cancel', methods=["POST"])
 def oncancel():
 
     # Read request form BPP    
