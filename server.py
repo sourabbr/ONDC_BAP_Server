@@ -8,7 +8,7 @@ from flask import jsonify
 import requests
 
 import time
-from datetime import datetime
+import datetime
 import json
 import uuid
 
@@ -117,12 +117,14 @@ def search():
 
     # Prepare and send request to BG
     data['context'][Core_Version_Key_Str] = Core_Version_Value
-    data['context'][BPP_ID_Key_Str] = BAP_ID_Value
-    data['context'][BPP_URI_Key_Str] = BAP_URI_Value
+    data['context'][BAP_ID_Key_Str] = BAP_ID_Value
+    data['context'][BAP_URI_Key_Str] = BAP_URI_Value
     data['context'][Trans_ID_Key_Str] = tran_id
     
     PrepareSendRequest(data, msg_id)
 
+    #ONDC_TODO
+    # Add BG URI
     resp = SendPostRequest ("http://localhost:5001/sourab", data)
 
     if (not resp):
@@ -340,7 +342,7 @@ def confirm():
 
 
 @app.route('/onconfirm', methods=["POST"])
-def oninit():
+def onconfirm():
 
     # Read request form BPP    
     req = request.get_data()
@@ -364,7 +366,7 @@ def oninit():
 
 # Cancel flow
 @app.route('/cancel', methods=["GET","POST"])
-def init():
+def cancel():
 
     # Read request from tally buyer app
     req = request.get_data()
@@ -407,7 +409,7 @@ def init():
 
 
 @app.route('/oncancel', methods=["POST"])
-def oninit():
+def oncancel():
 
     # Read request form BPP    
     req = request.get_data()
