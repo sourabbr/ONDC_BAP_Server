@@ -186,6 +186,7 @@ def select():
 
     tran_id = res["context"]["transaction_id"]
     bpp_uri = res["context"]["bpp_uri"]
+    bpp_uri = bpp_uri + "/select"
 
     # Create message id 
     msg_id = str (uuid.uuid4())   
@@ -252,6 +253,7 @@ def init():
 
     tran_id = res["context"]["transaction_id"]
     bpp_uri = res["context"]["bpp_uri"]
+    bpp_uri = bpp_uri + "/init"
 
     # Create message id 
     msg_id = str (uuid.uuid4())   
@@ -318,6 +320,7 @@ def confirm():
 
     tran_id = res["context"]["transaction_id"]
     bpp_uri = res["context"]["bpp_uri"]
+    bpp_uri = bpp_uri + "/confirm"
 
     # Create message id 
     msg_id = str (uuid.uuid4())   
@@ -385,6 +388,7 @@ def cancel():
 
     tran_id = res["context"]["transaction_id"]
     bpp_uri = res["context"]["bpp_uri"]
+    bpp_uri = bpp_uri + "/cancel"
 
     # Create message id 
     msg_id = str (uuid.uuid4())   
