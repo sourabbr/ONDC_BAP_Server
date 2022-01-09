@@ -219,7 +219,7 @@ def select():
     resp = SendPostRequest (bpp_uri, res)
 
     if (not resp):
-        Logger("Error NACK")
+        Logger("Error", "NACK")
         return jsonify (err_response)
     
     # Check for data from onsearch
@@ -290,7 +290,7 @@ def init():
     resp = SendPostRequest (bpp_uri, res)
 
     if (not resp):
-        Logger("Error NACK")
+        Logger("Error", "NACK")
         return jsonify (err_response)
     
     # Check for data from onsearch
@@ -361,7 +361,7 @@ def confirm():
     resp = SendPostRequest (bpp_uri, res)
 
     if (not resp):
-        Logger("Error NACK")
+        Logger("Error", "NACK")
         return jsonify (err_response)
     
     # Check for data from onsearch
@@ -433,7 +433,7 @@ def cancel():
     resp = SendPostRequest (bpp_uri, res)
 
     if (not resp):
-        Logger("Error NACK")
+        Logger("Error", "NACK")
         return jsonify (err_response)
     
     # Check for data from onsearch
