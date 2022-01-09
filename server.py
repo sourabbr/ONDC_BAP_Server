@@ -89,9 +89,19 @@ def WriteResp (msg_id, req_str):
 def NoDataReceived (tran_id):
     return not message_id_map[transaction_id_map[tran_id]] 
 
-def SendPostRequest (url, data):
+def SendBGPostRequest (url, data):
     headers = {'Content-type': 'application/json; charset=UTF-8'}
     response = requests.post(url, json=data, headers=headers)
+    resp_body = response.json () 
+    Logger ("BG Response Body", resp_body)
+    if (resp_body["message"]["ack"]["status"] == "ACK"):
+        return True
+    else:
+        return False
+
+def SendPostRequest (url, data):
+    headers = {'Content-type': 'application/json; charset=UTF-8'}
+    response = requests.post(url, json=data, headers=headers, verify=False)
     resp_body = response.json () 
     Logger ("BG Response Body", resp_body)
     if (resp_body["message"]["ack"]["status"] == "ACK"):
@@ -135,7 +145,7 @@ def search():
 
     #ONDC_TODO
     # Add BG URI
-    resp = SendPostRequest ("https://pilot-gateway-1.beckn.nsdl.co.in/search", data)
+    resp = SendBGPostRequest ("https://pilot-gateway-1.beckn.nsdl.co.in/search", data)
 
     if (not resp):
         Logger("Error", "NACK")
@@ -227,14 +237,18 @@ def onselect():
     # Read request form BPP    
     req = request.get_data()    
     req_str = bytes.decode(req)
-    Logger ("Request from BPP", req_str)
-
+    
     # Format as dictionary
     res = json.loads(req_str)
 
     tran_id = res["context"]["transaction_id"]
     msg_id  = res["context"]["message_id"]
+    tally_bpp_id = res["context"][BPP_ID_Key_Str]
 
+    if (tally_bpp_id.find ("tbpp.tallyenterprise") == -1):
+        return jsonify (bpp_ack_response)
+
+    Logger ("Request from BPP", req_str)
     Logger("Action", "OnSelect")
     Logger("Transaction ID", tran_id)
     Logger("Message ID", msg_id)
@@ -294,14 +308,18 @@ def oninit():
     # Read request form BPP    
     req = request.get_data()
     req_str = bytes.decode(req)
-    Logger ("Request from BPP", req_str)
 
     # Format as dictionary
     res = json.loads(req_str)
 
     tran_id = res["context"]["transaction_id"]
     msg_id  = res["context"]["message_id"]
+    tally_bpp_id = res["context"][BPP_ID_Key_Str]
 
+    if (tally_bpp_id.find ("tbpp.tallyenterprise") == -1):
+        return jsonify (bpp_ack_response)
+
+    Logger ("Request from BPP", req_str)
     Logger("Action", "Oninit")
     Logger("Transaction ID", tran_id)
     Logger("Message ID", msg_id)
@@ -362,14 +380,18 @@ def onconfirm():
     # Read request form BPP    
     req = request.get_data()
     req_str = bytes.decode(req)
-    Logger ("Request from BPP", req_str)
-
+    
     # Format as dictionary
     res = json.loads(req_str)
 
     tran_id = res["context"]["transaction_id"]
     msg_id  = res["context"]["message_id"]
+    tally_bpp_id = res["context"][BPP_ID_Key_Str]
 
+    if (tally_bpp_id.find ("tbpp.tallyenterprise") == -1):
+        return jsonify (bpp_ack_response)
+
+    Logger ("Request from BPP", req_str)
     Logger("Action", "Onconfirm")
     Logger("Transaction ID", tran_id)
     Logger("Message ID", msg_id)
@@ -430,14 +452,18 @@ def oncancel():
     # Read request form BPP    
     req = request.get_data()
     req_str = bytes.decode(req)
-    Logger ("Request from BPP", req_str)
 
     # Format as dictionary
     res = json.loads(req_str)
 
     tran_id = res["context"]["transaction_id"]
     msg_id  = res["context"]["message_id"]
+    tally_bpp_id = res["context"][BPP_ID_Key_Str]
 
+    if (tally_bpp_id.find ("tbpp.tallyenterprise") == -1):
+        return jsonify (bpp_ack_response)
+
+    Logger ("Request from BPP", req_str)
     Logger("Action", "Oncancel")
     Logger("Transaction ID", tran_id)
     Logger("Message ID", msg_id)
