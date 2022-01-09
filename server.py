@@ -25,10 +25,11 @@ TimeStamp_Key_Str   = "timestamp"
 
 Core_Version_Value   = "1.0.0"
 
-#ONDC_TODO
-# update the values
-BAP_ID_Value         = "https://tbap.tallyenterprise.com/"
-BAP_URI_Value        = "https://tbap.tallyenterprise.com/"
+BAP_ID_Value         = "tbap.tallyenterprise.com"
+BAP_URI_Value        = "https://tbap.tallyenterprise.com"
+
+BBP_ID_Value         = "tbbp.tallyenterprise.com"
+BBP_URI_Value        = "https://tbbp.tallyenterprise.com"
 
 
 app = Flask(__name__)
@@ -157,13 +158,17 @@ def onsearch():
     # Read request form BG    
     req = request.get_data()
     req_str = bytes.decode(req)
-    Logger ("Request from BG", req_str)
-
     # Format as dictionary
     res = json.loads(req_str)
 
     tran_id = res["context"]["transaction_id"]
     msg_id = res["context"]["message_id"]
+    tally_bpp_id = res["context"][BPP_ID_Key_Str]
+
+    if (tally_bpp_id.find ("tbpp.tallyenterprise") == -1):
+        return jsonify (bpp_ack_response)
+    
+    Logger ("Request from BG", req_str)       
     Logger("Action", "OnSearch")
     Logger("Transaction ID", tran_id)    
     Logger("Message ID", msg_id)
@@ -220,7 +225,7 @@ def select():
 def onselect():
 
     # Read request form BPP    
-    req = request.get_data()
+    req = request.get_data()    
     req_str = bytes.decode(req)
     Logger ("Request from BPP", req_str)
 
